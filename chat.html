@@ -1700,6 +1700,10 @@
                     display = "block";
                     message = `There was an error checking for updates. Error: ${version.error}`;
                     timeout = 10000;
+                } else {
+                    // Deprecation notice
+                    display = "block";
+                    message = `Please be aware that the online version of this Overlay will stop working after March 2026. See https://github.com/izzy/stream-chat for further information`;
                 }
 
                 if (config["version"]["alert"] === true && message !== '') {
