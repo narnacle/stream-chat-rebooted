@@ -1,9 +1,14 @@
-# stream-chat
+# Deprecation notice
 
-[![https://img.shields.io/github/license/izzy/stream-chat](https://img.shields.io/github/license/izzy/stream-chat)](LICENSE.md)
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/izzy/stream-chat)](https://github.com/izzy/stream-chat/releases)
-[![Discord](https://img.shields.io/discord/402126550004269073?color=7289DA&label=discord)](https://discord.com/invite/yRTM7H2tek)
-[![pages-build-deployment](https://github.com/izzy/stream-chat/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main&name=Pages%20Build)](https://chat.bean.tools/)
+> [!CAUTION]
+> 
+> This repository will not see any further development. It will be archived in March 2026.
+>
+> If you want to take over and continue development, see https://github.com/izzy/stream-chat/issues/60
+> 
+> If you want to continue using the overlay as is, please download it and use it as a local version(see below). Please keep in mind that any further fixes will be provided by someone else.
+
+# stream-chat
 
 Chat Overlay for OBS based on [streamer.bot](https://streamer.bot/)'s websocket, using pronouns from [pronouns.alejo.io](https://pronouns.alejo.io/).
 
@@ -17,11 +22,12 @@ After unpacking you can open `generator.html` in a browser to open the configura
 
 ### Online
 
+> [!WARNING]
+> The online overlay will be disabled in March 2026
+
 While this is the easier method, using the online method comes with some drawbacks. First and foremost that Github has a soft limit on Bandwidth and Availability. There is no guarantee that this will always work.
 
 Also keep in mind that Github has their own [data collection policies](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#data-collection).
-
-To get started with using this method go to https://chat.bean.tools/generator.html 
 
 ### Configuration
 
@@ -29,8 +35,6 @@ Supported settings are in [options.md](options.md). It's easier to use the gener
 
 ## Troubleshooting
 Generally the best way to troubleshoot is to open the browser console (F12) and check for any errors. Error messages in the console might differ depending on your browser. Given OBS is based on CEF(Chromium Embedded Framework) it's likely that Chrome's console is the most accurate.
-
-If you're not sure what to do, feel free to open an issue and we'll try to help. You can also join the discord(see below) and we can help you in text or voice chat.
 
 ### Settings set in the generator aren't working in OBS
 #### Possible reasons:
@@ -75,10 +79,6 @@ If you're not sure what to do, feel free to open an issue and we'll try to help.
 #### Troubleshooting:
 
 * Make sure that in Streamer.Bot you started the internal Websocket server(under "Websocket Server"), not a custom one(under "Websocket Servers" - mind the plural)
-
-## I've read this README but I still have questions/problems, where can I get help?
-
-If you have a Github account, opening an issue is the best way to give feedback. Otherwise feel free to join my [Discord](https://discord.gg/yRTM7H2tek) and ask your questions in the appropriate support channels.
 
 ## Contributors / Thanks
 
