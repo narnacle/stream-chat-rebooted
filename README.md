@@ -1,4 +1,6 @@
-# Active continuation
+# stream-chat-rebooted
+
+## Active continuation
 
 This repository is an active continuation of Izzy's original
 [stream-chat](https://github.com/izzy/stream-chat) project. Full credit for the
@@ -6,18 +8,6 @@ original overlay and foundation goes to Izzy.
 
 I am actively maintaining this continuation so the project can keep receiving
 updates, fixes, and support beyond the original repository's planned archive.
-
-# Deprecation notice
-
-> [!CAUTION]
-> 
-> This repository will not see any further development. It will be archived in March 2026.
->
-> If you want to take over and continue development, see https://github.com/izzy/stream-chat/issues/60
-> 
-> If you want to continue using the overlay as is, please download it and use it as a local version(see below). Please keep in mind that any further fixes will be provided by someone else.
-
-# stream-chat
 
 Chat Overlay for OBS based on [streamer.bot](https://streamer.bot/)'s websocket, using pronouns from [pronouns.alejo.io](https://pronouns.alejo.io/).
 
