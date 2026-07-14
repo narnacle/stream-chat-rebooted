@@ -52,14 +52,29 @@ let groups = {
 const css_size_hint = "CSS class font-size value (e.g. x-large, 2em, 22px)";
 
 let fields = [
-    { group: groups.Integrations, label: "Check for new stream-chat versions", name: "version_check", type: "checkbox", defaultValue: true, help: "Checks for new versions when starting the overlay and displays a warning when a new version is available." },
-    { group: groups.Integrations, label: "Use an alert popup for new versions(read the notice!)", name: "version_alert", type: "checkbox", defaultValue: false, help: "Uses a popup instead of the obnoxiously large notification. CAREFUL: If you have the overlay setup more than once or reload the overlay frequently this might be a bad idea!" },
+    { group: groups.Integrations, label: "Check for new stream-chat-rebooted versions", name: "version_check", type: "checkbox", defaultValue: true, help: "Checks for new stream-chat-rebooted releases when starting the overlay and displays a warning when a new version is available." },
+    { group: groups.Integrations, label: "Use an alert popup for update notices", name: "version_alert", type: "checkbox", defaultValue: false, help: "Uses a popup instead of the in-overlay update notification. CAREFUL: If you have the overlay setup more than once or reload the overlay frequently this might be a bad idea!" },
     { group: groups.Integrations, label: "Streamer.Bot enabled", name: "sb_enabled", type: "checkbox", defaultValue: true, help: "Enables Streamer.Bot websocket integration when active." },
 
-    { group: groups.StreamerBot, label: "Websocket URI", name: "sb_ws_uri", type: "text", defaultValue: "ws://127.0.0.1:8080", help: "The address of your Streamer.Bot. See Streamer.Bot -> Server/Clients -> Websocket Server. Should look like 'ws://ADDRESS:PORT/ENDPOINT" },
-    { group: groups.StreamerBot, label: "Twitch", name: "sb_twitch", type: "checkbox", defaultValue: true, help: "Show Twitch messages from Streamer.Bot" },
-    { group: groups.StreamerBot, label: "YouTube", name: "sb_youtube", type: "checkbox", defaultValue: true, help: "Show YouTube messages from Streamer.Bot" },
-    { group: groups.StreamerBot, label: "Kick", name: "sb_kick", type: "checkbox", defaultValue: true, help: "Show Kick messages from Streamer.Bot" },
+    {
+        group: groups.StreamerBot,
+        label: "Websocket",
+        type: "websocket",
+        help: "The address and port of your Streamer.bot Websocket Server. The overlay adds ws:// automatically.",
+        address: { label: "Address", name: "sb_ws_address", defaultValue: "127.0.0.1" },
+        port: { label: "Port", name: "sb_ws_port", defaultValue: "8080" },
+    },
+    {
+        group: groups.StreamerBot,
+        label: "Platforms",
+        type: "platforms",
+        help: "Choose which Streamer.Bot chat sources this overlay subscribes to.",
+        platforms: [
+            { label: "Twitch", name: "sb_twitch", defaultValue: true },
+            { label: "YouTube", name: "sb_youtube", defaultValue: true },
+            { label: "Kick", name: "sb_kick", defaultValue: true },
+        ],
+    },
 
     { group: groups.Chat, label: "Cmdprefix", name: "cmdprefix", type: "text", nullable: true, help: "A prefix for bot commands. If this is set, chat messages starting with this won't be displayed" },
     { group: groups.Chat, label: "Bots", name: "bots", type: "text", nullable: true, help: "A comma-separated list of accounts whose messages will not be shown(case-insensitive)" },
@@ -68,6 +83,9 @@ let fields = [
     { group: groups.Theme, label: "Bubbles", name: "bubbles", type: "checkbox", help: "Displays bubbles instead of the standard chat log" },
     { group: groups.Theme, label: "Badges", name: "badges", type: "checkbox", help: "If set to false this disable broadcaster/VIP/moderator badges"},
     { group: groups.Theme, label: "Badges on the left", name: "badges_left", type: "checkbox", help: "Moves broadcaster/VIP/moderator badges to the left"},
+    { group: groups.Theme, label: "Platform logos", name: "platform_badges", type: "checkbox", help: "Shows compact Twitch, YouTube, or Kick logos next to chat names" },
+    { group: groups.Theme, label: "User avatars", name: "user_avatars", type: "checkbox", help: "Shows profile pictures when Streamer.bot provides an avatar URL for the chat user" },
+    { group: groups.Theme, label: "Pronouns", name: "pronouns", type: "checkbox", defaultValue: true, help: "Shows pronouns from pronouns.alejo.io when available" },
     { group: groups.Theme, label: "Highlights", name: "highlights", type: "checkbox", defaultValue: true, help: "If set to false this disables visual difference for highlighted messages" },
     { group: groups.Theme, label: "Announcements", name: "announcements", type: "checkbox", defaultValue: true, help: "If set to false this disables announcement messages" },
     { group: groups.Theme, label: "Timestamp", name: "timestamp", type: "checkbox", defaultValue: false, help: "If set to true displays the time of the message" },
@@ -126,6 +144,43 @@ const urlEl = document.querySelector("#url")
 const loadUrlEl = document.querySelector("#load-url")
 const generatorEl = document.querySelector("#generator");
 const debugSwitch = document.querySelector("#debug");
+const tooltipEl = document.querySelector("#tooltip");
+
+const showTooltip = (sourceEl, text) => {
+    tooltipEl.innerText = text;
+    tooltipEl.classList.add("is-visible");
+
+    const rect = sourceEl.getBoundingClientRect();
+    const tooltipRect = tooltipEl.getBoundingClientRect();
+    const spacing = 10;
+    const preferredLeft = rect.left + rect.width / 2 - tooltipRect.width / 2;
+    const left = Math.min(
+        Math.max(preferredLeft, spacing),
+        window.innerWidth - tooltipRect.width - spacing
+    );
+    const preferredTop = rect.bottom + spacing;
+    const top = preferredTop + tooltipRect.height > window.innerHeight - spacing
+        ? Math.max(spacing, rect.top - tooltipRect.height - spacing)
+        : preferredTop;
+
+    tooltipEl.style.left = `${left}px`;
+    tooltipEl.style.top = `${top}px`;
+};
+
+const hideTooltip = () => {
+    tooltipEl.classList.remove("is-visible");
+};
+
+window.addEventListener("scroll", hideTooltip, true);
+window.addEventListener("resize", hideTooltip);
+
+const attachTooltip = (helpEl, text) => {
+    helpEl.tabIndex = 0;
+    helpEl.addEventListener("mouseenter", () => showTooltip(helpEl, text));
+    helpEl.addEventListener("focus", () => showTooltip(helpEl, text));
+    helpEl.addEventListener("mouseleave", hideTooltip);
+    helpEl.addEventListener("blur", hideTooltip);
+};
 
 async function buildMarkup() {
 
@@ -140,11 +195,64 @@ async function buildMarkup() {
         generatorEl.appendChild(groupEl);
     }
 
-    fields.map(({ group, label, name, type, defaultValue, nullable, help }) => {
+    fields.map(({ group, label, name, type, defaultValue, nullable, help, platforms, address, port }) => {
         const groupEl = document.getElementById("group-" + group.id);
         const rowEl = document.createElement("span");
+        rowEl.classList.add("form-row");
 
         switch (type) {
+            case "platforms": {
+                var inputEl = document.createElement("div");
+                inputEl.classList.add("platform-options");
+                rowEl.classList.add("platform-row");
+
+                platforms.forEach((platform) => {
+                    const platformEl = document.createElement("label");
+                    platformEl.classList.add("platform-toggle");
+                    platformEl.innerText = platform.label;
+
+                    const checkbox = document.createElement("input");
+                    checkbox.value = platform.name;
+                    checkbox.name = platform.name;
+                    checkbox.type = "checkbox";
+                    checkbox.checked = platform.defaultValue === true;
+                    platformEl.classList.toggle("is-checked", checkbox.checked);
+                    checkbox.addEventListener("change", (e) => {
+                        platformEl.classList.toggle("is-checked", e.target.checked);
+                    });
+
+                    platformEl.prepend(checkbox);
+                    inputEl.append(platformEl);
+                });
+                break;
+            }
+            case "websocket": {
+                var inputEl = document.createElement("div");
+                inputEl.classList.add("websocket-options");
+
+                const protocolEl = document.createElement("span");
+                protocolEl.classList.add("protocol-prefix");
+                protocolEl.innerText = "ws://";
+
+                const addressEl = document.createElement("input");
+                addressEl.classList.add("input");
+                addressEl.name = address.name;
+                addressEl.type = "text";
+                addressEl.value = address.defaultValue;
+                addressEl.placeholder = address.label;
+
+                const portEl = document.createElement("input");
+                portEl.classList.add("input", "port-input");
+                portEl.name = port.name;
+                portEl.type = "number";
+                portEl.min = "1";
+                portEl.max = "65535";
+                portEl.value = port.defaultValue;
+                portEl.placeholder = port.label;
+
+                inputEl.append(protocolEl, addressEl, portEl);
+                break;
+            }
             case "fontlist": {
                 var inputEl = document.createElement("select")
                 const fonts = availableFonts().then((fonts) => {
@@ -194,7 +302,10 @@ async function buildMarkup() {
         const labelEl = document.createElement("label");
         labelEl.innerText = label;
         labelEl.classList.add("label")
-        rowEl.append(labelEl, inputEl)
+        const controlsEl = document.createElement("span");
+        controlsEl.classList.add("field-controls");
+        controlsEl.append(inputEl);
+        rowEl.append(labelEl, controlsEl)
         if (nullable) {
             const labelNullableRadio = document.createElement("label");
             labelNullableRadio.classList.add("checkbox")
@@ -205,7 +316,7 @@ async function buildMarkup() {
             nullableRadio.id = `${name}_nullable`
             nullableRadio.type = "checkbox"
             labelNullableRadio.append(nullableRadio)
-            rowEl.append(labelNullableRadio)
+            controlsEl.append(labelNullableRadio)
 
         }
 
@@ -216,7 +327,8 @@ async function buildMarkup() {
             helpEl.innerText = "?";
             helpElInner.innerText = help;
             helpEl.append(helpElInner);
-            rowEl.append(helpEl);
+            attachTooltip(helpEl, help);
+            controlsEl.append(helpEl);
         }
 
         groupEl.append(rowEl);
@@ -251,7 +363,7 @@ const changeDirection = (horizontal = false) => {
         iframe.style.width = "300px";
         iframe.style.height = "500px";
         chatFrame.style.float = "left";
-        configSection.style.display = "flex";
+        configSection.style.display = "grid";
     }
 }
 
@@ -277,12 +389,22 @@ const generateURL = () => {
                 value = value.slice(1)
             }
 
+            if (key === "sb_ws_address" || key === "sb_ws_port") {
+                continue;
+            }
+
             if (value === key) {
                 searchParams.append(key, true)
             } else {
                 searchParams.append(key, value)
             }
         }
+    }
+
+    const wsAddress = formData.get("sb_ws_address");
+    const wsPort = formData.get("sb_ws_port");
+    if (wsAddress || wsPort) {
+        searchParams.append("sb_ws_uri", buildWebsocketUri(wsAddress, wsPort));
     }
 
     checkboxes.forEach((c) => {
@@ -295,6 +417,31 @@ const generateURL = () => {
         }
     });
     setUrl(baseUrl + searchParams.toString())
+}
+
+const buildWebsocketUri = (address, port) => {
+    const normalizedAddress = String(address || "127.0.0.1").trim().replace(/^wss?:\/\//i, "").replace(/\/+$/, "");
+    const normalizedPort = String(port || "8080").trim();
+
+    if (normalizedAddress.includes(":") || normalizedPort === "") {
+        return `ws://${normalizedAddress}`;
+    }
+
+    return `ws://${normalizedAddress}:${normalizedPort}`;
+}
+
+const splitWebsocketUri = (uri) => {
+    let normalized = String(uri || "").trim().replace(/^wss?:\/\//i, "").replace(/\/+$/, "");
+    let address = normalized;
+    let port = "";
+
+    const lastColon = normalized.lastIndexOf(":");
+    if (lastColon > -1 && normalized.indexOf("]") < lastColon) {
+        address = normalized.slice(0, lastColon);
+        port = normalized.slice(lastColon + 1);
+    }
+
+    return { address, port };
 }
 
 const setUrl = (url) => {
@@ -368,6 +515,19 @@ const loadFromUrl = () => {
 
     for (const [key, value] of url.searchParams) {
         console.log(["Loading value: ", key, value])
+        if (key === "sb_ws_uri") {
+            const websocket = splitWebsocketUri(value);
+            const addressEl = document.querySelector('[name="sb_ws_address"]');
+            const portEl = document.querySelector('[name="sb_ws_port"]');
+            if (addressEl) {
+                addressEl.value = websocket.address;
+            }
+            if (portEl) {
+                portEl.value = websocket.port;
+            }
+            continue;
+        }
+
         const el = document.querySelector(`[name="${key}"]`);
         if (el) {
             if (el.type === "checkbox") {
@@ -402,16 +562,21 @@ dragButton.addEventListener("click", (e) => {e.preventDefault();})
 
 buildMarkup();
 
+document.querySelectorAll("#url-container .help").forEach((helpEl) => {
+    attachTooltip(helpEl, helpEl.querySelector("span").innerText);
+});
+
 if (isLocal === true) {
     document.getElementById("obs-url").style.display = "none";
     document.getElementById("obs-url-help").style.display = "none";
 }
 
+const optionRow = (selector) => document.querySelector(selector).closest(".form-row");
 const bubbles = document.querySelector("input[name=bubbles]");
-const bubble_color = document.querySelector("input[name=bubble_color]").parentNode;
-const bubble_border_color = document.querySelector("input[name=bubble_border_color]").parentNode;
-const bubble_border_radius = document.querySelector("input[name=bubble_border_radius]").parentNode;
-const bubble_border_size = document.querySelector("input[name=bubble_border_size]").parentNode;
+const bubble_color = optionRow("input[name=bubble_color]");
+const bubble_border_color = optionRow("input[name=bubble_border_color]");
+const bubble_border_radius = optionRow("input[name=bubble_border_radius]");
+const bubble_border_size = optionRow("input[name=bubble_border_size]");
 bubbles.addEventListener("change", (e) => {
     if (e.target.checked) {
         bubble_color.style.display = "";
@@ -428,8 +593,8 @@ bubbles.addEventListener("change", (e) => {
 });
 
 const highlights = document.querySelector("input[name=highlights]");
-const highlight_color = document.querySelector("input[name=highlight_color]").parentNode;
-const highlight_bg_color = document.querySelector("input[name=highlight_bg_color]").parentNode;
+const highlight_color = optionRow("input[name=highlight_color]");
+const highlight_bg_color = optionRow("input[name=highlight_bg_color]");
 highlights.addEventListener("change", (e) => {
     if (e.target.checked) {
         highlight_color.style.display = "";
@@ -441,8 +606,8 @@ highlights.addEventListener("change", (e) => {
     }
 });
 
-const default_color = document.querySelector("input[name=default_color]").parentNode;
-const username_color = document.querySelector("input[name=text_color]").parentNode;
+const default_color = optionRow("input[name=default_color]");
+const username_color = optionRow("input[name=text_color]");
 username_color.addEventListener("change", (e) => {
     if (e.target.checked) {
         default_color.style.display = "none";
@@ -452,8 +617,8 @@ username_color.addEventListener("change", (e) => {
 });
 
 const announcements = document.querySelector("input[name=announcements]");
-const announcement_color = document.querySelector("input[name=announcement_color]").parentNode;
-const announcement_bg_color = document.querySelector("input[name=announcement_bg_color]").parentNode;
+const announcement_color = optionRow("input[name=announcement_color]");
+const announcement_bg_color = optionRow("input[name=announcement_bg_color]");
 announcements.addEventListener("change", (e) => {
     if (e.target.checked) {
         announcement_color.style.display = "";

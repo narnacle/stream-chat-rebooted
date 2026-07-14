@@ -27,12 +27,11 @@ After unpacking you can open `generator.html` in a browser to open the configura
 
 ### Online
 
-> [!WARNING]
-> The online overlay will be disabled in March 2026
+You can also use the hosted generator at https://chat.bean.tools/generator.html.
 
-While this is the easier method, using the online method comes with some drawbacks. First and foremost that Github has a soft limit on Bandwidth and Availability. There is no guarantee that this will always work.
+While this is the easier method, using the online method comes with some drawbacks. First and foremost that GitHub has a soft limit on bandwidth and availability. There is no guarantee that this will always work.
 
-Also keep in mind that Github has their own [data collection policies](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#data-collection).
+Also keep in mind that GitHub has its own [data collection policies](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#data-collection).
 
 ### Configuration
 

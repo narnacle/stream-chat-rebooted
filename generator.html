@@ -5,211 +5,400 @@
   <meta charset="utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>stream-chat link generator</title>
+  <title>stream-chat-rebooted link generator</title>
 
   <style>
     html {
-      --blue: blue;
-      --red: red;
-      --green: green;
-      --yellow: yellow;
-      --orange: orange;
-      --purple: purple;
-      --pink: pink;
-      --brown: brown;
-      --black: black;
-      --white: white;
-      --gray: gray;
-      --bg: #41145F;
+      --blue: #38BDF8;
+      --red: #F43F5E;
+      --green: #22C55E;
+      --yellow: #FACC15;
+      --orange: #FB923C;
+      --purple: #A78BFA;
+      --pink: #F472B6;
+      --brown: #A16207;
+      --black: #020617;
+      --white: #F8FAFC;
+      --gray: #94A3B8;
+      --bg: #10141F;
+      --surface: #171C29;
+      --surface-2: #1F2635;
+      --border: #30394C;
+      --text: #F8FAFC;
+      --muted: #A9B4C6;
+      --accent: #2DD4BF;
+      --accent-2: #F472B6;
+      --danger: #FB7185;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
-      font-family: sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
-      color: #F0F0FF;
-      text-shadow: 0px 0px 3px #000;
-      display: flex;
-      flex-flow: column;
-      height: 100%;
+      color: var(--text);
+      display: grid;
+      gap: 1.25rem;
+      padding: 1.25rem;
     }
 
     a {
-      color: #00C8AF;
+      color: var(--accent);
     }
 
     section {
       display: block;
-      margin-bottom: 2rem;
+      margin: 0;
     }
 
     input {
-      margin: 0.5rem;
+      margin: 0;
     }
 
-    input:not([type="color"]) {
-      padding: 1rem;
-      border: none;
-      background: var(--bg);
-      color: #F0F0FF;
-      border-bottom: 2px solid;
-      transition: all 0.4s;
+    input:not([type="color"]):not([type="checkbox"]) {
+      width: 100%;
+      min-height: 2.75rem;
+      padding: 0.75rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0D1220;
+      color: var(--text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     }
 
-    input:not([type="color"]):hover {
-      color: #FAB4FF;
-      border-image-source: linear-gradient(to right, #FA1ED2, #00C8AF);
-      border-bottom: 2px solid #00C8AF;
-      border-image-slice: 1;
-      transition: all 0.4s;
+    input:not([type="color"]):not([type="checkbox"]):hover {
+      border-color: #526078;
     }
 
-    input:not([type="color"]):focus {
+    input:not([type="color"]):not([type="checkbox"]):focus {
       outline: none;
-      color: #BEFAE1;
-      border-image-source: linear-gradient(to right, #00C8AF, #FA1ED2);
-      border-bottom: 2px solid #00C8AF;
-      border-image-slice: 1;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.16);
+    }
+
+    input[type="color"] {
+      width: 3rem;
+      height: 2.5rem;
+      padding: 0.2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0D1220;
     }
 
     input[type="checkbox"] {
-      accent-color: #FA1ED2;
-      height: 1.5rem;
-      width: 1.5rem;
+      accent-color: var(--accent);
+      height: 1.15rem;
+      width: 1.15rem;
+      flex: 0 0 auto;
       vertical-align: middle;
     }
 
-    #url {
-      width: 20rem;
+    .title {
+      margin: 0;
+      font-size: clamp(1.9rem, 4vw, 3.25rem);
+      line-height: 1.05;
+      letter-spacing: 0;
     }
 
-    .button {
-      background: #1E69FF;
-      border-radius: 1rem;
-      padding: 1rem 1rem 1rem 0.7rem;
-      color: #fff;
-      text-decoration: none;
-      display: inline-block;
-      width: 12rem;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    .button:hover {
-      background: #0014A5;
-    }
-
-    .button:active {
-      background: #0014A5;
-      color: #00C8AF;
-    }
-
-    #toast {
-      background: #BEFAE1;
-      position: absolute;
-      top: 2rem;
-      width: 15rem;
-      padding: 1rem;
-      left: 40%;
-      color: var(--bg);
-      transition: opacity .4s ease-in-out;
-      opacity: 0;
-      text-shadow: none;
-    }
-
-    #toast.toast-success {
-      background: #8ff1e6;
-    }
-
-    #toast.toast-error {
-      background: #FAB4FF;
+    .subtitle {
+      margin: 0.45rem 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 500;
     }
 
     #header {
-      flex: 0 1 auto;
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    #url-container>div {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    #url-container>div>div {
+      display: grid;
+      grid-template-columns: minmax(16rem, 1fr) auto auto auto;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .platform-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0;
+    }
+
+    .platform-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      min-width: 6.5rem;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0D1220;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .platform-toggle input {
+      margin: 0;
+    }
+
+    .platform-toggle.is-checked {
+      border-color: var(--accent);
+      background: rgba(45, 212, 191, 0.12);
+      color: var(--text);
+    }
+
+    .websocket-options {
+      display: grid;
+      grid-template-columns: auto minmax(7rem, 0.8fr) minmax(5.5rem, 6.5rem);
+      gap: 0.5rem;
+      align-items: center;
+      flex: 1 1 16rem;
+      min-width: 0;
+    }
+
+    .protocol-prefix {
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0D1220;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .port-input {
+      text-align: center;
+    }
+
+    #url {
+      width: 100%;
+    }
+
+    .button {
+      min-height: 2.75rem;
+      border: 1px solid rgba(45, 212, 191, 0.38);
+      border-radius: 8px;
+      background: #144E52;
+      padding: 0.75rem 1rem;
+      color: #fff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 9.5rem;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 700;
+      text-shadow: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .button:hover {
+      background: #176467;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    #toast {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      width: min(22rem, calc(100vw - 2rem));
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      color: #031312;
+      transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+      opacity: 0;
+      text-shadow: none;
+      z-index: 9999;
+      box-shadow: var(--shadow);
+    }
+
+    #toast.toast-success {
+      background: var(--accent);
+    }
+
+    #toast.toast-error {
+      background: var(--danger);
     }
 
     #config {
-      flex: 1 1 auto;
+      min-width: 0;
     }
 
     #chat-frame {
-      float: left;
-      z-index: 1000;
-      background-color: var(--bg);
+      position: sticky;
+      top: 1rem;
+      align-self: start;
+      z-index: 10;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
     }
 
-    /* Chat preview iframe */
+    #chat-frame h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+
+    #chat-frame .checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.75rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
     #preview {
+      display: block;
+      width: 300px;
       height: 500px;
-      border-width: 3px;
-      border-style: solid;
-      border-image-source: linear-gradient(to left, #BE0078, #FA1ED2);
-      border-image-slice: 1;
+      max-width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
       background: white;
       padding: 0;
-      margin: 0.5rem;
+      margin: 0;
     }
 
-    #config>form {
-      margin-left: 1rem;
-      float: left;
-
-    }
-
-    #config>form>div>span {
+    .form-row {
       width: 100%;
-      display: table-row;
-      padding: 0.4rem 0rem;
+      display: grid;
+      grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr);
+      gap: 0.75rem;
+      align-items: start;
+      padding: 0.55rem 0;
     }
 
-    #config>form>div>span>label:first-child {
-      display: table-cell;
-      max-width: 13rem;
-      margin-right: 1rem;
+    .field-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+    }
+
+    .field-controls>input:not([type="color"]):not([type="checkbox"]) {
+      flex: 1 1 9rem;
+      min-width: 0;
+    }
+
+    .field-controls>.checkbox {
+      min-height: 1.8rem;
+      white-space: nowrap;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
     .help {
       position: relative;
-      padding: 0.5rem;
-      border-radius: 2rem;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 1.8rem;
+      height: 1.8rem;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: #0D1220;
+      color: var(--muted);
       cursor: help;
+      text-shadow: none;
     }
 
     .help span {
       display: none;
     }
 
-    .help:hover span {
-      position: absolute;
-      display: block;
-      background: #BE0078;
+    #tooltip {
+      position: fixed;
+      background: #0D1220;
       color: white;
-      padding: 1rem;
-      width: 15rem;
-      right: 2rem;
-      top: 1rem;
-      border-radius: 1rem;
-      box-shadow: 0px 0px 4px #700;
-      z-index: 9999;
-      filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.25));
+      padding: 0.75rem;
+      width: min(18rem, calc(100vw - 2rem));
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      z-index: 2147483647;
+      line-height: 1.4;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(0.35rem);
+      transition: opacity 0.12s ease, transform 0.12s ease;
     }
 
-    #drag-help {
-      margin-left: 18rem;
+    #tooltip.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .help-text {
+      margin-left: 0;
     }
 
     .group {
-      display: block;
+      display: grid;
+      gap: 0.35rem;
       height: 100%;
       opacity: 1;
       z-index: 1;
+      min-width: min(100%, 21rem);
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
     }
 
     .group h2 {
-      border-bottom: 2px solid;
+      margin: 0 0 0.45rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid;
       border-image-slice: 1;
       position: relative;
       z-index: 1;
+      font-size: 1rem;
+      letter-spacing: 0;
     }
 
     .group-open {
@@ -222,33 +411,65 @@
       transition: height 0.25s ease-in-out, opacity 0.4s ease-in-out;
       height: 0;
       opacity: 0;
-    }
-
-
-    #chat-frame {
-      position: sticky;
-      top: 0;
-      align-self: flex-start;
+      overflow: hidden;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-width: 0;
     }
 
     #config-section {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
+      gap: 1rem;
+      align-items: start;
     }
 
     #generator {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      align-items: flex-start;
-      align-content: flex-start;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(23rem, 1fr));
+      gap: 1rem;
     }
 
     #generator>.group {
-      flex: 1 0 auto;
-      flex-grow: 1;
-      flex-shrink: 0;
-      flex-basis: auto;
+      min-width: 0;
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 0.75rem;
+      }
+
+      #url-container>div>div,
+      #config-section,
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .websocket-options {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .websocket-options .port-input {
+        grid-column: 1 / -1;
+        text-align: left;
+      }
+
+      #chat-frame {
+        position: static;
+      }
+
+      #preview {
+        width: 100%;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .help:hover span {
+        left: 0;
+        right: auto;
+      }
     }
   </style>
 </head>
@@ -256,8 +477,8 @@
 <body>
   <section id="header">
     <h1 class="title">Stream Chat Overlay URL generator</h1>
-    <h2 class="subtitle">based on <a href="https://github.com/izzy/stream-chat" target="_blank"
-        rel="noreferrer">https://github.com/izzy/stream-chat</a> </h2>
+    <h2 class="subtitle">stream-chat-rebooted, based on Izzy's original <a href="https://github.com/izzy/stream-chat" target="_blank"
+        rel="noreferrer">stream-chat</a></h2>
     <section id="url-container">
       <div>
         <div>
@@ -265,14 +486,14 @@
           <a id="copy-button" class="button">Copy</a>
 
           <a id="obs-url" class="button">Drag me into OBS</a>
-          <span id="obs-url-help" class="help">?<span id="drag-help">Drag and drop does not work when OBS is running
+          <span id="obs-url-help" class="help">?<span class="help-text">Drag and drop does not work when OBS is running
               with Administrator privileges</span></span>
         </div>
 
         <div>
           <input class="input" type="text" id="load-url" />
           <a id="load-obs-button" class="button">Load settings</a>
-          <span id="load-obs-help" class="help">?<span id="drag-help">Paste an existing URL here to load
+          <span id="load-obs-help" class="help">?<span class="help-text">Paste an existing URL here to load
               settings</span></span>
         </div>
       </div>
@@ -293,6 +514,7 @@
   </section>
 
   <div id="toast"></div>
+  <div id="tooltip" role="tooltip"></div>
   <script src="./generator.js"></script>
 </body>
 

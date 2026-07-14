@@ -4,7 +4,7 @@
 To use them just add them as URL parameters, e.g.
 
 ```
-file:///C:/path/to/stream-chat/chat.html?sb_enabled=true&bubbles=true
+file:///C:/path/to/stream-chat-rebooted/chat.html?sb_enabled=true&bubbles=true
 ```
 
 ## Config options
@@ -19,8 +19,8 @@ file:///C:/path/to/stream-chat/chat.html?sb_enabled=true&bubbles=true
 | `sb_twitch`        | true                 | boolean       | Enable Streamer.Bot Twitch Messsages                                                           | `sb_twitch=true`                 |
 | `sb_youtube`       | true                 | boolean       | Enable Streamer.Bot YouTube Messsages                                                          | `sb_youtube=true`                |
 | `sb_kick`          | true                 | boolean       | Enable Streamer.Bot Kick Messsages                                                             | `sb_kick=true`                   |
-| `version_check`    | true                 | boolean       | Checks for new versions when starting the overlay and displays a warning when a new version is available | `version_check=true`   |
-| `version_alert`    | false                | boolean       | Uses a popup instead of the obnoxiously large notification. CAREFUL: If you have the overlay setup more than once or reload the overlay frequently this might be a bad idea | `version_alert=true`   |
+| `version_check`    | true                 | boolean       | Checks for new stream-chat-rebooted releases when starting the overlay and displays a warning when a new version is available | `version_check=true`   |
+| `version_alert`    | false                | boolean       | Uses a popup instead of the in-overlay update notification. CAREFUL: If you have the overlay setup more than once or reload the overlay frequently this might be a bad idea | `version_alert=true`   |
 | `direction`        |                      | horizontal    | Set to "horizontal" this will scroll the text from right to left instead of bottom to top      | `direction=horizontal`           |
 | `bubbles`          | false                | boolean       | Displays bubbles instead of the standard chat log display                                      | `bubbles=true`                   |
 | `bubble_color`     |                      | color         | If set overrides chat bubble color                                                             | `bubble_color=00FF00`            |
@@ -34,6 +34,9 @@ file:///C:/path/to/stream-chat/chat.html?sb_enabled=true&bubbles=true
 | `default_color`    |                      | color         | This sets the default background/bubble colour for users who don't have a colour set           | `default_color=FF0000`           |
 | `badges`           | true                 | boolean       | If set to false this disable broadcaster/VIP/moderator badges                                  | `badges=false`                   |
 | `badges_left`      | false                | boolean       | Moves broadcaster/VIP/moderator badges to the left                                             | `badges_left=true`               |
+| `platform_badges`  | false                | boolean       | Shows compact Twitch, YouTube, or Kick logos next to chat names                                | `platform_badges=true`           |
+| `user_avatars`     | false                | boolean       | Shows profile pictures when Streamer.bot provides an avatar URL for the chat user              | `user_avatars=true`              |
+| `pronouns`         | true                 | boolean       | Shows pronouns from pronouns.alejo.io when available                                           | `pronouns=false`                 |
 | `highlights`       | true                 | boolean       | If set to false this disables visual difference for highlighted messages                       | `highlights=false`               |
 | `highlight_color`  |                      | color         | This sets the colour for highlighted messages                                                  | `highlight_color=FF0000`         |
 | `highlight_bg_color` |                    | color         | This sets the background/bubble colour for highlighted messages                                | `highlight_bg_color=FF0000`      |
@@ -49,8 +52,6 @@ file:///C:/path/to/stream-chat/chat.html?sb_enabled=true&bubbles=true
 | `fontfamily`       | Open Sans            | string        | set (any locally installed) font                                                               | `fontfamily=Calibri`             |
 | `fontsize`         | large                | number/string | CSS class font-size value (e.g. x-large, 2em, 22px)                                            | `fontsize=22px`                  |
 | `emote_size`       | 1.4rem               | number/string | CSS class size value (e.g. 2em, 22px)                                                          | `emote_size=22px`                |
-| `version_check`    | true               | boolean | Check for new stream-chat versions on startup                                                          | `version_check=false`                |
-| `version_alert`       | false               | boolean | Use an alert popup for new versions(can be clicked away, but be careful, might open several windows!)                                                          | `version_alert=true`                |
 #### Types
 
 `color`: 6-digit HEX colour code without the '#'

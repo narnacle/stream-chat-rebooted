@@ -20,6 +20,10 @@
             overflow: hidden;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         @keyframes append-animate {
             from {
                 height: 0;
@@ -46,14 +50,20 @@
             animation: append-animate .3s linear;
             transition: max-height 0.3s ease-out;
             height: auto;
-            word-break: normal;
-            overflow-wrap: break-word;
-            hyphens: auto;
-            hyphenate-character: "»";
+            margin: 0.08rem 0.35rem;
+            line-height: 1.32;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            hyphens: none;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
         }
 
         .msg-badges {
-            vertical-align: middle;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.18rem;
+            vertical-align: 0;
+            line-height: 1;
         }
 
         .msg-user::after {
@@ -61,17 +71,103 @@
         }
 
         .msg-pronoun {
-            padding: 0rem 0.3rem;
+            padding: 0rem 0.25rem;
+            opacity: 0.82;
+            font-size: 0.92em;
+            font-weight: 700;
+        }
+
+        .msg-avatar {
+            width: 1.35em;
+            height: 1.35em;
+            display: inline-block;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 0.3rem;
+            vertical-align: -0.28em;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.26), 0 1px 3px rgba(0, 0, 0, 0.28);
         }
 
         .msg-badges>img {
+            display: inline-block;
             width: 1rem;
+            height: 1rem;
+            flex: 0 0 auto;
+            border-radius: 0.15rem;
             box-shadow: 0 0 2px black;
+        }
+
+        .msg-user.badges-right>.msg-badges {
+            margin-left: 0.28rem;
+            margin-right: 0.12rem;
+        }
+
+        .msg-user.badges-left>.msg-badges {
+            margin-right: 0.28rem;
+        }
+
+        .platform-badge {
+            width: 0.92em;
+            height: 0.92em;
+            display: inline-block;
+            flex: 0 0 auto;
+            border-radius: 0.2em;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.8em;
+            font-weight: 800;
+            line-height: 0.92em;
+            letter-spacing: 0;
+            text-shadow: none;
+            vertical-align: 0.12em;
+            position: relative;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.22), 0 1px 2px rgba(0, 0, 0, 0.28);
+        }
+
+        .platform-badge-twitch {
+            background: #9146ff;
+        }
+
+        .platform-badge-twitch::before {
+            content: "T";
+            display: block;
+            text-align: center;
+        }
+
+        .platform-badge-youtube {
+            background: #ff0000;
+            border-radius: 0.26em;
+        }
+
+        .platform-badge-youtube::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border-top: 0.22em solid transparent;
+            border-bottom: 0.22em solid transparent;
+            border-left: 0.36em solid #fff;
+            transform: translate(-40%, -50%);
+        }
+
+        .platform-badge-kick {
+            background: #53fc18;
+            color: #031900;
+        }
+
+        .platform-badge-kick::before {
+            content: "K";
+            display: block;
+            text-align: center;
         }
 
         .msg-text>img {
             vertical-align: middle;
             width: 1.4rem;
+            height: auto;
+            margin: 0 0.06rem;
         }
 
         .msg-text>.announcement {
@@ -81,11 +177,13 @@
         .msg-timestamp {
             padding: 0rem 0.2em;
             font-size: 0.8em;
+            opacity: 0.78;
+            white-space: nowrap;
         }
 
         .msg-user {
             font-weight: bold;
-
+            overflow-wrap: anywhere;
         }
 
         #version-notice {
@@ -123,16 +221,17 @@
         }
 
         .chat-message {
-            margin: 0 5px 5px 5px;
-            background-color: rgba(0, 0, 0, 0.6);
-            border: 2px solid #ffe0f0;
-            border-radius: 6px;
+            margin: 0 0.45rem 0.45rem 0.45rem;
+            background-color: rgba(0, 0, 0, 0.66);
+            border: 1px solid #ffe0f0;
+            border-radius: 0.65rem;
             color: white;
+            box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.2);
         }
 
         .msg-text,
         .msg-user {
-            padding: 0.4rem;
+            padding: 0.42rem 0.55rem;
             display: block;
         }
 
@@ -140,26 +239,32 @@
             background: #ffe0f0;
             font-weight: bold;
             color: black;
+            position: relative;
+            text-shadow: none;
         }
 
         .msg-pronoun {
-            right: 1em;
-            position: absolute;
+            position: static;
+            transform: none;
+            white-space: nowrap;
         }
 
         .msg-timestamp {
             border: 1px solid transparent;
             border-radius: 1rem;
             background-color: rgba(0, 0, 0, 0.6);
-            margin-right: 0.25rem;
             vertical-align: middle;
             padding: 0.1rem 0.3rem;
             color: white;
             font-size: .6rem;
         }
 
+        .msg-user>.msg-timestamp {
+            margin-left: 0.34rem;
+        }
+
         .msg-user {
-            font-weight: normal;
+            font-weight: 800;
         }
 
         .msg-user::after {
@@ -180,18 +285,19 @@
         }
 
         .chat-message {
-            margin-left: 1rem;
+            margin-left: 0.65rem;
             float: left;
         }
 
         .msg-user, .msg-text {
-            padding: 0.4rem;
+            padding: 0.42rem 0.55rem;
         }
     </style>
 
     <style id="horizontal-bubbles" type="text">
         .msg-pronoun {
             position: inherit;
+            transform: none;
         }
 
         .msg-user {
@@ -212,9 +318,10 @@
     <div id="connection-status" style="display: none;"></div>
 
     <script>
-        const STREAMCHAT_VERSION = '0.3.4';
-        const STREAMCHAT_GH_USER = 'izzy';
-        const STREAMCHAT_GH_REPO = 'stream-chat';
+        const STREAMCHAT_VERSION = '0.4.0';
+        const STREAMCHAT_NAME = 'stream-chat-rebooted';
+        const STREAMCHAT_GH_USER = 'narnacle';
+        const STREAMCHAT_GH_REPO = 'stream-chat-rebooted';
 
         class ConnectionStatus {
 
@@ -319,23 +426,26 @@
             const res = await fetch(`https://api.github.com/repos/${STREAMCHAT_GH_USER}/${STREAMCHAT_GH_REPO}/releases/latest`)
                 .then(response => response.json())
                 .then(data => {
-                    const version = data.tag_name.replace(/^v/i, "");
-                    const version_parts = version.split('.');
-                    const current_version_parts = STREAMCHAT_VERSION.split('.');
-                    let upToDate = true;
-
-                    if (version_parts[0] > current_version_parts[0]) {
-                        console.debug(`${STREAMCHAT_GH_REPO} version ${STREAMCHAT_VERSION} is outdated. There is a major update to version ${data.tag_name} available.`);
-                        upToDate = false;
-                    } else if ((version_parts[0] === current_version_parts[0] && version_parts[1] > current_version_parts[1]) ||
-                        (version_parts[0] === current_version_parts[0] && version_parts[1] === current_version_parts[1] && version_parts[2] > current_version_parts[2])) {
-                        console.debug(`${STREAMCHAT_GH_REPO} version ${STREAMCHAT_VERSION} is outdated. Please update to version ${data.tag_name}`);
-                        upToDate = false;
-                    } else {
-                        console.debug(`${STREAMCHAT_GH_REPO} version ${STREAMCHAT_VERSION} is up to date or newer than the latest release ${data.tag_name}`);
+                    if (!data.tag_name) {
+                        throw new Error('No latest release tag returned by GitHub');
                     }
 
-                    return { version: version, upToDate: upToDate, error: null };
+                    const version = data.tag_name.replace(/^v/i, "");
+                    const version_parts = version.split('.').map(part => parseInt(part, 10) || 0);
+                    const current_version_parts = STREAMCHAT_VERSION.split('.').map(part => parseInt(part, 10) || 0);
+                    const latestIsNewer = version_parts.some((part, index) => {
+                        const currentPart = current_version_parts[index] || 0;
+                        return part > currentPart && version_parts.slice(0, index).every((previousPart, previousIndex) =>
+                            previousPart === (current_version_parts[previousIndex] || 0));
+                    });
+
+                    if (latestIsNewer) {
+                        console.debug(`${STREAMCHAT_NAME} version ${STREAMCHAT_VERSION} is outdated. Please update to version ${data.tag_name}`);
+                    } else {
+                        console.debug(`${STREAMCHAT_NAME} version ${STREAMCHAT_VERSION} is up to date or newer than the latest release ${data.tag_name}`);
+                    }
+
+                    return { version: version, upToDate: !latestIsNewer, error: null };
                 }).catch(error => {
 
                     console.error(error);
@@ -529,6 +639,8 @@
                         'enabled': searchParamIsTrue("badges", true),
                         'left': searchParamIsTrue("badges_left"),
                     },
+                    'platform_badges': searchParamIsTrue("platform_badges"),
+                    'user_avatars': searchParamIsTrue("user_avatars"),
                     'emote_size': searchParamOrDefault('emote_size', '1.4rem'),
                     'font': {
                         'family': searchParamOrDefault("fontfamily", "Open Sans"),
@@ -550,17 +662,19 @@
 
         const config = parseURL();
 
-        console.debug(`Starting stream chat version ${STREAMCHAT_VERSION}`);
+        console.debug(`Starting ${STREAMCHAT_NAME} version ${STREAMCHAT_VERSION}`);
         console.debug(['Loaded config', config]);
 
         let socket, pronouns_users = {},
             pronouns;
 
-        // Fill the pronoun cache
-        // TODO: Handle errors on this
-        fetch('https://pronouns.alejo.io/api/pronouns').then(response => response.json()).then(data => {
-            pronouns = data;
-        });
+        if (config['ui']['pronouns'] === true) {
+            // Fill the pronoun cache
+            // TODO: Handle errors on this
+            fetch('https://pronouns.alejo.io/api/pronouns').then(response => response.json()).then(data => {
+                pronouns = data;
+            });
+        }
 
         /**
          * Get the pronoun for a user and cache it for future use
@@ -706,7 +820,53 @@
             Announcement: Symbol('Announcement'),
         };
 
-        let add_message = (id, message, author, color, timestamp, badges = [], highlight = Highlights.None) => {
+        let platform_badge = (platform) => {
+            if (!platform) {
+                return null;
+            }
+
+            const platformName = platform.toLowerCase();
+            const labels = {
+                twitch: "Twitch",
+                youtube: "YouTube",
+                kick: "Kick",
+            };
+
+            return createElement('span', {
+                'class': `platform-badge platform-badge-${platformName}`,
+                'title': labels[platformName] || platform,
+                'aria-label': labels[platformName] || platform,
+            });
+        }
+
+        let avatar_url = (...sources) => {
+            const keys = [
+                'userProfileUrl',
+                'profileImageUrl',
+                'profileImage',
+                'profilePictureUrl',
+                'profilePicture',
+                'avatarUrl',
+                'avatar',
+                'imageUrl',
+            ];
+
+            for (const source of sources) {
+                if (!source || typeof source !== 'object') {
+                    continue;
+                }
+
+                for (const key of keys) {
+                    if (typeof source[key] === 'string' && source[key].startsWith('http')) {
+                        return source[key];
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        let add_message = (id, message, author, color, timestamp, badges = [], highlight = Highlights.None, platform = null) => {
             let background_color = get_user_color(color);
             let text_color = get_text_color(background_color);
 
@@ -714,6 +874,16 @@
             let el_pronoun = createElement('span', { 'class': 'msg-pronoun' }, author['pronoun']);
             let el_message = createElement('span', { 'class': 'msg-text' });
             let el_user = createElement('span', { 'class': 'msg-user' }, author.name);
+            if (config['ui']['user_avatars'] === true && author['avatar']) {
+                let el_avatar = createElement('img', {
+                    'class': 'msg-avatar',
+                    'src': author['avatar'],
+                    'alt': '',
+                    'referrerpolicy': 'no-referrer',
+                });
+                el_avatar.addEventListener('error', () => el_avatar.remove());
+                el_user.prepend(el_avatar);
+            }
 
             let div_message = createElement('div', {
                 'id': id,
@@ -804,6 +974,13 @@
                 el_user.style.color = get_color_hex(text_color);
             }
 
+            if (config['ui']['platform_badges'] === true) {
+                const el_platform_badge = platform_badge(platform);
+                if (el_platform_badge !== null) {
+                    el_badges.appendChild(el_platform_badge);
+                }
+            }
+
             if (config['ui']['badges']['enabled'] === true && badges.length > 0) {
                 for (let badge of badges) {
                     let el_badge = createElement('img', {
@@ -811,33 +988,33 @@
                     });
                     el_badges.appendChild(el_badge);
                 }
+            }
 
+            if (el_badges.childElementCount > 0) {
                 // Add badges to the user line
                 if (config['ui']['badges']['left'] === false) {
+                    el_user.classList.add('badges-right');
                     el_user.appendChild(el_badges);
                 } else {
+                    el_user.classList.add('badges-left');
                     el_user.prepend(el_badges);
                 }
             }
 
             el_message.innerHTML = message;
 
-            // Add the timestamp
+            // Add the pronoun to the user line
+            if (author['pronoun']) {
+                el_user.appendChild(el_pronoun);
+            }
+
+            // Add the timestamp after the name and pronouns.
             if (config['ui']['timestamp']['enabled'] === true) {
                 let el_timestamp = createElement('span', { 'class': 'msg-timestamp' },
                     new Date().toLocaleTimeString(config['ui']['timestamp']['locale'],
                         config['ui']['timestamp']['options'])
                 );
-                if (config['ui']['bubbles']['enabled'] === false) {
-                    div_message.appendChild(el_timestamp);
-                } else {
-                    el_user.prepend(el_timestamp);
-                }
-            }
-
-            // Add the pronoun to the user line
-            if (author['pronoun']) {
-                el_user.appendChild(el_pronoun);
+                el_user.appendChild(el_timestamp);
             }
 
             // Adds the user line and message to the message div
@@ -853,14 +1030,14 @@
         let StreamerBot = {
             'message': {
                 'twitch': async (msg_id, user_id, author, author_color, message, emotes = [], role = 0,
-                    badges = [], highlight = Highlights.None, pronoun = false) => {
+                    badges = [], highlight = Highlights.None, pronoun = false, avatar = null) => {
                     // TODO handle cheermotes
 
                     if (skip_message(message, author)) {
                         return;
                     }
 
-                    if (pronoun === false) {
+                    if (pronoun === false && config['ui']['pronouns'] === true) {
                         await fetch_pronoun(author);
                         pronoun = get_pronoun(author);
                     }
@@ -869,6 +1046,7 @@
                         name: author,
                         id: user_id,
                         pronoun: pronoun === false ? false : `(${pronoun})`,
+                        avatar: avatar,
                     }
 
                     if (emotes.length === 0) {
@@ -915,18 +1093,18 @@
                     }
 
                     let color = get_color(author_color);
-                    add_message(msg_id, message, author, color, 0, badges, highlight);
+                    add_message(msg_id, message, author, color, 0, badges, highlight, 'twitch');
                 },
                 'youtube': (message_id, user_id, user_name, message, timestamp, owner, moderator, sponsor,
-                    verified) => {
+                    verified, avatar = null) => {
                     // TODO: Add message
-                    // TODO: Add youtube logo as badge
                     // TODO: Add badges for owner, moderator, sponsor, verified
 
                     let author = {
                         name: user_name,
                         id: user_id,
                         pronoun: false,
+                        avatar: avatar,
                     }
 
                     let color = get_user_color({
@@ -934,9 +1112,7 @@
                         g: '00',
                         b: '00'
                     });
-                    let badges = [{
-                        'url': 'https://yt3.ggpht.com/IkpeJf1g9Lq0WNjvSa4XFq4LVNZ9IP5FKW8yywXb12djo1OGdJtziejNASITyq4L0itkMNw=w24-h24-c-k-nd'
-                    }];
+                    let badges = [];
                     message = htmlentities(message);
 
                     const yt_emote_width = '28';
@@ -1058,15 +1234,15 @@
                         message = message.replaceAll(e, el_emote.outerHTML);
                     }
 
-                    add_message(message_id, message, author, color, timestamp, badges, Highlights.None);
+                    add_message(message_id, message, author, color, timestamp, badges, Highlights.None, 'youtube');
                 },
                 'kick': async (message_id, user_id, user_name, message, color, emotes = [], badges = [],
-                    pronoun = false) => {
+                    pronoun = false, avatar = null) => {
                     if (skip_message(message, user_name)) {
                         return;
                     }
 
-                    if (pronoun === false) {
+                    if (pronoun === false && config['ui']['pronouns'] === true) {
                         await fetch_pronoun(user_name);
                         pronoun = get_pronoun(user_name);
                     }
@@ -1075,6 +1251,7 @@
                         name: user_name,
                         id: user_id,
                         pronoun: pronoun === false ? false : `(${pronoun})`,
+                        avatar: avatar,
                     };
 
                     message = htmlentities(message);
@@ -1109,7 +1286,7 @@
                         badges = [];
                     }
 
-                    add_message(message_id, message, author, get_color(color), 0, badges, Highlights.None);
+                    add_message(message_id, message, author, get_color(color), 0, badges, Highlights.None, 'kick');
                 }
             },
         }
@@ -1263,7 +1440,7 @@
             // Rules for sizes and fonts
             addCSSRule(config['ui']['font']['family'], 'body', 'font-family');
             addCSSRule(config['ui']['font']['size'], 'body', 'font-size');
-            addCSSRule(config['ui']['emote_size'], `${message} > img`, 'width');
+            addCSSRule(config['ui']['emote_size'], `${message} .msg-text > img`, 'width');
 
             // Rules for colors
             //addCSSRule(config['ui']['colors']['default'], `${message}.defaultcolor`, 'color');
@@ -1378,7 +1555,8 @@
 
                                 StreamerBot['message']['twitch'](m.msgId, m.userId, m.displayName,
                                     m.color, m.message, m.emotes, m.role, m.badges,
-                                    m.isHighlighted ? Highlights.Highlight : Highlights.None);
+                                    m.isHighlighted ? Highlights.Highlight : Highlights.None, false,
+                                    avatar_url(m.user, m));
 
                             } else if (wsdata.event.type === 'Announcement') {
                                 if (config["ui"]["announcements"] === false) {
@@ -1407,7 +1585,8 @@
                                 }
 
                                 StreamerBot['message']['twitch'](m.msgId, m.userId, m.displayName, color,
-                                    m.message, m.emotes, m.role, m.badges, Highlights.Announcement);
+                                    m.message, m.emotes, m.role, m.badges, Highlights.Announcement, false,
+                                    avatar_url(m.user, m));
 
                             } else if (wsdata.event.type === 'UserTimedOut' || wsdata.event.type ===
                                 'UserBanned') {
@@ -1428,7 +1607,8 @@
                                 }
 
                                 StreamerBot['message']['youtube'](m.eventId, m.user.id, m.user.name, m.message, 0,
-                                    m.user.isOwner, m.user.isModerator, m.user.isSponsor, m.user.isVerified);
+                                    m.user.isOwner, m.user.isModerator, m.user.isSponsor, m.user.isVerified,
+                                    avatar_url(m.user, m));
                             } else if (wsdata.event.type === 'MessageDeleted') {
                                 // This doesn't seem to be implemented in Streamer.Bot
                                 console.debug(['Message deleted', wsdata]);
@@ -1457,7 +1637,9 @@
                                     m.message || m.rawInput || '',
                                     m.color,
                                     m.emotes || [],
-                                    m.badge || m.badges || []
+                                    m.badge || m.badges || [],
+                                    false,
+                                    avatar_url(user, m)
                                 );
                             } else if (wsdata.event.type === 'UserTimedOut' || wsdata.event.type === 'UserBanned') {
                                 console.debug(['Kick user timed out or banned', wsdata]);
@@ -1486,9 +1668,18 @@
         if (config["debug"] === true) {
             // Debugging is used in the Overlay generator live preview
             const messages = [
-                "Are you a robot?",
-                "How are you?",
-                "Happy birthday!",
+                "I came here for vibes and questionable decisions.",
+                "The stream buffered and I achieved enlightenment.",
+                "Can we pretend that was frame-perfect?",
+                "My snack build is currently overpowered.",
+                "The boss music started but it was just my dishwasher.",
+                "I blinked and suddenly there was lore.",
+                "This chat has excellent posture today.",
+                "That strategy was illegal in three time zones.",
+                "I rate that jump a confident maybe.",
+                "Please nerf gravity.",
+                "The controller disconnected emotionally.",
+                "Certified cinematic chaos.",
             ];
 
             const badges = [
@@ -1630,6 +1821,13 @@
                 "Joanna Cole",
             ];
 
+            const sample_avatar = (name) => {
+                const initials = name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase();
+                const hue = [...name].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 360;
+                const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="48" fill="hsl(${hue},70%,42%)"/><text x="48" y="57" text-anchor="middle" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="white">${initials}</text></svg>`;
+                return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+            }
+
             const colors = [{
                 r: "B0",
                 g: "BF",
@@ -1745,29 +1943,46 @@
                     return;
                 }
 
-                if (Math.random() < 0.5 &&
-                    config["plugins"]["streamerbot"]["enabled"] === true &&
-                    config["plugins"]["streamerbot"]["twitch"] === true) {
-                    let highlightkeys = Object.keys(Highlights);
-                    StreamerBot["message"]["twitch"](
-                        String(Math.random()),
-                        Math.floor(Math.random() * 10000000),
-                        username,
-                        get_color_hex(colors[getRnd(colors.length - 1)]),
-                        message,
-                        messagesEmote,
-                        getRnd(4, 0),
-                        badges[getRnd(badges.length - 1)],
-                        Highlights[highlightkeys[highlightkeys.length * Math.random() << 0]],
-                        pronoun
-                    );
-                } else if (config["plugins"]["streamerbot"]["enabled"] === true && config["plugins"]["streamerbot"]["youtube"] === true) {
-                    StreamerBot["message"]["youtube"](String(Math.random()), Math.floor(Math.random() *
-                        10000000), username, message, 0, false, false, false, false);
-                } else if (config["plugins"]["streamerbot"]["enabled"] === true && config["plugins"]["streamerbot"]["kick"] === true) {
-                    StreamerBot["message"]["kick"](String(Math.random()), Math.floor(Math.random() *
-                        10000000), username, message, get_color_hex(colors[getRnd(colors.length - 1)]), [], [],
-                        pronoun);
+                if (config["plugins"]["streamerbot"]["enabled"] === true) {
+                    let enabledPlatforms = [];
+                    if (config["plugins"]["streamerbot"]["twitch"] === true) {
+                        enabledPlatforms.push("twitch");
+                    }
+                    if (config["plugins"]["streamerbot"]["youtube"] === true) {
+                        enabledPlatforms.push("youtube");
+                    }
+                    if (config["plugins"]["streamerbot"]["kick"] === true) {
+                        enabledPlatforms.push("kick");
+                    }
+
+                    if (enabledPlatforms.length === 0) {
+                        return;
+                    }
+
+                    const platform = enabledPlatforms[getRnd(enabledPlatforms.length - 1)];
+                    if (platform === "twitch") {
+                        let highlightkeys = Object.keys(Highlights);
+                        StreamerBot["message"]["twitch"](
+                            String(Math.random()),
+                            Math.floor(Math.random() * 10000000),
+                            username,
+                            get_color_hex(colors[getRnd(colors.length - 1)]),
+                            message,
+                            messagesEmote,
+                            getRnd(4, 0),
+                            badges[getRnd(badges.length - 1)],
+                            Highlights[highlightkeys[highlightkeys.length * Math.random() << 0]],
+                            pronoun,
+                            sample_avatar(username)
+                        );
+                    } else if (platform === "youtube") {
+                        StreamerBot["message"]["youtube"](String(Math.random()), Math.floor(Math.random() *
+                            10000000), username, message, 0, false, false, false, false, sample_avatar(username));
+                    } else if (platform === "kick") {
+                        StreamerBot["message"]["kick"](String(Math.random()), Math.floor(Math.random() *
+                            10000000), username, message, get_color_hex(colors[getRnd(colors.length - 1)]), [], [],
+                            pronoun, sample_avatar(username));
+                    }
                 }
 
                 remove_old_messages();
@@ -1786,16 +2001,12 @@
                 console.log(version);
                 if (version.upToDate === false) {
                     display = "block";
-                    message = `You are using version ${STREAMCHAT_VERSION} of ${STREAMCHAT_GH_REPO}.` +
+                    message = `You are using version ${STREAMCHAT_VERSION} of ${STREAMCHAT_NAME}. ` +
                         `There is a new version available. Please update to the latest version ${version.version}.`;
                 } else if (version.error) {
                     display = "block";
                     message = `There was an error checking for updates. Error: ${version.error}`;
                     timeout = 10000;
-                } else {
-                    // Deprecation notice
-                    display = "block";
-                    message = `Please be aware that the online version of this Overlay will stop working after March 2026. See https://github.com/izzy/stream-chat for further information`;
                 }
 
                 if (config["version"]["alert"] === true && message !== '') {
