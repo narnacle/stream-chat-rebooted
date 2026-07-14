@@ -1,3 +1,12 @@
+# Active continuation
+
+This repository is an active continuation of Izzy's original
+[stream-chat](https://github.com/izzy/stream-chat) project. Full credit for the
+original overlay and foundation goes to Izzy.
+
+I am actively maintaining this continuation so the project can keep receiving
+updates, fixes, and support beyond the original repository's planned archive.
+
 # Deprecation notice
 
 > [!CAUTION]
