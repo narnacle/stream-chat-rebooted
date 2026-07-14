@@ -11,11 +11,17 @@ updates, fixes, and support beyond the original repository's planned archive.
 
 Chat Overlay for OBS based on [streamer.bot](https://streamer.bot/)'s websocket, using pronouns from [pronouns.alejo.io](https://pronouns.alejo.io/).
 
+## Supported platforms
+
+stream-chat-rebooted supports chat messages from Streamer.bot for Twitch,
+YouTube, and Kick. Kick support includes chat messages, emotes, badges, and
+message removal after Kick user bans or timeouts.
+
 ## Installation
 
 ### Local
 
-To use the Chat overlay locally just download the newest release from the [releases page](https://github.com/izzy/stream-chat/releases/) and unpack it somewhere OBS can reach it.
+To use the Chat overlay locally just download the newest release from the [releases page](https://github.com/narnacle/stream-chat-rebooted/releases/) and unpack it somewhere OBS can reach it.
 
 After unpacking you can open `generator.html` in a browser to open the configurator.
 

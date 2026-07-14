@@ -59,6 +59,7 @@ let fields = [
     { group: groups.StreamerBot, label: "Websocket URI", name: "sb_ws_uri", type: "text", defaultValue: "ws://127.0.0.1:8080", help: "The address of your Streamer.Bot. See Streamer.Bot -> Server/Clients -> Websocket Server. Should look like 'ws://ADDRESS:PORT/ENDPOINT" },
     { group: groups.StreamerBot, label: "Twitch", name: "sb_twitch", type: "checkbox", defaultValue: true, help: "Show Twitch messages from Streamer.Bot" },
     { group: groups.StreamerBot, label: "YouTube", name: "sb_youtube", type: "checkbox", defaultValue: true, help: "Show YouTube messages from Streamer.Bot" },
+    { group: groups.StreamerBot, label: "Kick", name: "sb_kick", type: "checkbox", defaultValue: true, help: "Show Kick messages from Streamer.Bot" },
 
     { group: groups.Chat, label: "Cmdprefix", name: "cmdprefix", type: "text", nullable: true, help: "A prefix for bot commands. If this is set, chat messages starting with this won't be displayed" },
     { group: groups.Chat, label: "Bots", name: "bots", type: "text", nullable: true, help: "A comma-separated list of accounts whose messages will not be shown(case-insensitive)" },

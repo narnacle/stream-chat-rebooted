@@ -473,6 +473,7 @@
                 'enabled': false,
                 'twitch': false,
                 'youtube': false,
+                'kick': false,
                 'websocket': '',
             };
             if (streamerbotEnabled === searchParamIsTrue("sb_enabled", true)) {
@@ -485,6 +486,7 @@
                     'enabled': streamerbotEnabled,
                     'twitch': searchParamIsTrue("sb_twitch", true),
                     'youtube': searchParamIsTrue("sb_youtube", true),
+                    'kick': searchParamIsTrue("sb_kick", true),
                     'websocket': sb_ws_uri
                 }
             }
@@ -1057,6 +1059,57 @@
                     }
 
                     add_message(message_id, message, author, color, timestamp, badges, Highlights.None);
+                },
+                'kick': async (message_id, user_id, user_name, message, color, emotes = [], badges = [],
+                    pronoun = false) => {
+                    if (skip_message(message, user_name)) {
+                        return;
+                    }
+
+                    if (pronoun === false) {
+                        await fetch_pronoun(user_name);
+                        pronoun = get_pronoun(user_name);
+                    }
+
+                    let author = {
+                        name: user_name,
+                        id: user_id,
+                        pronoun: pronoun === false ? false : `(${pronoun})`,
+                    };
+
+                    message = htmlentities(message);
+
+                    if (Array.isArray(emotes) && emotes.length > 0) {
+                        for (const emote of emotes) {
+                            const text = emote.text || emote.name;
+                            const url = emote.url || emote.imageUrl;
+
+                            if (!text || !url) {
+                                continue;
+                            }
+
+                            const el_emote = document.createElement('img');
+                            el_emote.src = url;
+                            if (parseInt(config['ui']['emote_size']) > 0) {
+                                el_emote.style.height = `${config['ui']['emote_size']}`;
+                                el_emote.style.width = 'auto';
+                            }
+
+                            message = message.replaceAll(htmlentities(text), el_emote.outerHTML);
+                        }
+                    }
+
+                    if (Array.isArray(badges) && badges.length > 0) {
+                        badges = badges.map(badge => {
+                            return {
+                                url: badge["url"] || badge["imageUrl"] || badge["info"]
+                            };
+                        }).filter(badge => badge.url);
+                    } else {
+                        badges = [];
+                    }
+
+                    add_message(message_id, message, author, get_color(color), 0, badges, Highlights.None);
                 }
             },
         }
@@ -1279,6 +1332,15 @@
                         ];
                     }
 
+                    if (config['plugins']['streamerbot']['kick'] === true) {
+                        subscribeEvents['Kick'] = [
+                            "ChatMessage",
+                            "Message",
+                            "UserTimedOut",
+                            "UserBanned"
+                        ];
+                    }
+
                     if (Object.keys(subscribeEvents).length > 0) {
                         let s = {
                             "request": "Subscribe",
@@ -1365,7 +1427,7 @@
                                     return;
                                 }
 
-                                StreamerBot['message']['youtube'](m.eventId, m.user.id, m.user.name, m.message,
+                                StreamerBot['message']['youtube'](m.eventId, m.user.id, m.user.name, m.message, 0,
                                     m.user.isOwner, m.user.isModerator, m.user.isSponsor, m.user.isVerified);
                             } else if (wsdata.event.type === 'MessageDeleted') {
                                 // This doesn't seem to be implemented in Streamer.Bot
@@ -1376,6 +1438,32 @@
                                 remove_messages_by_user_id(wsdata.data.user.id);
                             } else {
                                 console.warn(['YouTube Event not implemented', event]);
+                            }
+                        } else if (wsdata.event.source === 'Kick') {
+                            if (wsdata.event.type === 'ChatMessage' || wsdata.event.type === 'Message') {
+                                let m = wsdata.data.message || wsdata.data;
+                                let user = m.user;
+                                let user_name = typeof user === 'string'
+                                    ? user
+                                    : user?.name || user?.displayName || user?.user || m.userName || m.displayName || m.username;
+                                let user_id = user?.id || user?.userId || m.userId;
+                                user_name = user_name || 'Kick User';
+                                user_id = user_id || user_name;
+
+                                StreamerBot['message']['kick'](
+                                    m.messageId || m.msgId || m.eventId || String(Date.now()),
+                                    user_id,
+                                    user_name,
+                                    m.message || m.rawInput || '',
+                                    m.color,
+                                    m.emotes || [],
+                                    m.badge || m.badges || []
+                                );
+                            } else if (wsdata.event.type === 'UserTimedOut' || wsdata.event.type === 'UserBanned') {
+                                console.debug(['Kick user timed out or banned', wsdata]);
+                                remove_messages_by_user_id(wsdata.data.userId || wsdata.data.user?.id);
+                            } else {
+                                console.warn(['Kick Event not implemented', event]);
                             }
                         }
                     } else {
@@ -1676,6 +1764,10 @@
                 } else if (config["plugins"]["streamerbot"]["enabled"] === true && config["plugins"]["streamerbot"]["youtube"] === true) {
                     StreamerBot["message"]["youtube"](String(Math.random()), Math.floor(Math.random() *
                         10000000), username, message, 0, false, false, false, false);
+                } else if (config["plugins"]["streamerbot"]["enabled"] === true && config["plugins"]["streamerbot"]["kick"] === true) {
+                    StreamerBot["message"]["kick"](String(Math.random()), Math.floor(Math.random() *
+                        10000000), username, message, get_color_hex(colors[getRnd(colors.length - 1)]), [], [],
+                        pronoun);
                 }
 
                 remove_old_messages();
