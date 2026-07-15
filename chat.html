@@ -226,7 +226,6 @@
             border: 1px solid #ffe0f0;
             border-radius: 0.65rem;
             color: white;
-            overflow: hidden;
             box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.2);
         }
 
@@ -242,6 +241,16 @@
             color: black;
             position: relative;
             text-shadow: none;
+        }
+
+        .bubble>.msg-user {
+            border-top-left-radius: inherit;
+            border-top-right-radius: inherit;
+        }
+
+        .bubble>.msg-text {
+            border-bottom-left-radius: inherit;
+            border-bottom-right-radius: inherit;
         }
 
         .msg-pronoun {
