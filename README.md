@@ -11,6 +11,8 @@ updates, fixes, and support beyond the original repository's planned archive.
 
 Chat Overlay for OBS based on [streamer.bot](https://streamer.bot/)'s websocket, using pronouns from [pronouns.alejo.io](https://pronouns.alejo.io/).
 
+![Stream Chat Overlay URL generator](assets/readme/generator-preview.png)
+
 ## Supported platforms
 
 stream-chat-rebooted supports chat messages from Streamer.bot for Twitch,
@@ -27,7 +29,7 @@ After unpacking you can open `generator.html` in a browser to open the configura
 
 ### Online
 
-You can also use the hosted generator at https://chat.bean.tools/generator.html.
+You can also use the hosted generator at https://chat.narnacle.com/generator.html.
 
 While this is the easier method, using the online method comes with some drawbacks. First and foremost that GitHub has a soft limit on bandwidth and availability. There is no guarantee that this will always work.
 
