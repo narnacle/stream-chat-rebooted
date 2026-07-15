@@ -16,8 +16,9 @@ Chat Overlay for OBS based on [streamer.bot](https://streamer.bot/)'s websocket,
 ## Supported platforms
 
 stream-chat-rebooted supports chat messages from Streamer.bot for Twitch,
-YouTube, and Kick. Kick support includes chat messages, emotes, badges, and
-message removal after Kick user bans or timeouts.
+YouTube, and Kick. Platform support includes chat messages, emotes, badges, and
+message removal after user bans or timeouts where Streamer.bot emits those
+moderation events.
 
 ## Installation
 

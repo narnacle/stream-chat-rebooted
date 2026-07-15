@@ -866,6 +866,23 @@
             return null;
         }
 
+        let role_badge = (label, background = '#606060', foreground = '#ffffff') => {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 72 72"><rect width="72" height="72" rx="14" fill="${background}"/><text x="36" y="46" text-anchor="middle" font-family="Arial,sans-serif" font-size="34" font-weight="800" fill="${foreground}">${label}</text></svg>`;
+            return {
+                url: `data:image/svg+xml,${encodeURIComponent(svg)}`
+            };
+        }
+
+        let pick_first = (...values) => {
+            for (const value of values) {
+                if (value !== undefined && value !== null && value !== '') {
+                    return value;
+                }
+            }
+
+            return null;
+        }
+
         let add_message = (id, message, author, color, timestamp, badges = [], highlight = Highlights.None, platform = null) => {
             let background_color = get_user_color(color);
             let text_color = get_text_color(background_color);
@@ -1097,9 +1114,6 @@
                 },
                 'youtube': (message_id, user_id, user_name, message, timestamp, owner, moderator, sponsor,
                     verified, avatar = null) => {
-                    // TODO: Add message
-                    // TODO: Add badges for owner, moderator, sponsor, verified
-
                     let author = {
                         name: user_name,
                         id: user_id,
@@ -1113,14 +1127,29 @@
                         b: '00'
                     });
                     let badges = [];
+                    if (owner === true) {
+                        badges.push(role_badge('O', '#ffd34d', '#201400'));
+                    }
+                    if (moderator === true) {
+                        badges.push(role_badge('M', '#5f84f1', '#ffffff'));
+                    }
+                    if (sponsor === true) {
+                        badges.push(role_badge('S', '#2ba640', '#ffffff'));
+                    }
+                    if (verified === true) {
+                        badges.push(role_badge('V', '#606060', '#ffffff'));
+                    }
+
                     message = htmlentities(message);
 
-                    const yt_emote_width = '28';
-                    const yt_emote_height = '28';
+                    let yt_emote_width = '28';
+                    let yt_emote_height = '28';
+                    let yt_emote_display_size = '28px';
 
                     if (parseInt(config['ui']['emote_size']) > 0) {
-                        const yt_emote_width = config['ui']['emote_size'];
-                        const yt_emote_height = config['ui']['emote_size'];
+                        yt_emote_width = String(parseInt(config['ui']['emote_size']));
+                        yt_emote_height = String(parseInt(config['ui']['emote_size']));
+                        yt_emote_display_size = config['ui']['emote_size'];
                     }
 
                     const yt_emotes = {
@@ -1229,7 +1258,8 @@
                     for (const e in yt_emotes) {
                         let el_emote = document.createElement('img');
                         el_emote.src = yt_emotes[e];
-                        el_emote.style = `height: ${yt_emote_height}px; width: ${yt_emote_width}px;`;
+                        el_emote.style.height = yt_emote_display_size;
+                        el_emote.style.width = yt_emote_display_size;
 
                         message = message.replaceAll(e, el_emote.outerHTML);
                     }
@@ -1353,6 +1383,10 @@
         }
 
         function remove_messages_by_user_id(user_id) {
+            if (user_id === undefined || user_id === null || user_id === '') {
+                return;
+            }
+
             console.debug('Removing messages by user id: ' + user_id);
 
             let chat = document.getElementById('chat');
@@ -1360,7 +1394,7 @@
             let messages_to_remove = [];
 
             for (let i = 0; i < messages.length; i++) {
-                if (parseInt(messages[i].dataset.userId) === user_id) {
+                if (String(messages[i].dataset.userId) === String(user_id)) {
                     messages_to_remove.push(messages[i]);
                 }
             }
@@ -1371,6 +1405,10 @@
         }
 
         function remove_messages_by_message_id(message_id) {
+            if (message_id === undefined || message_id === null || message_id === '') {
+                return;
+            }
+
             console.debug('Removing messages by message id: ' + message_id);
 
             let chat = document.getElementById('chat');
@@ -1505,6 +1543,7 @@
                             "Message",
                             "MessageDeleted",
                             "UserBanned",
+                            "UserTimedOut",
                             "SuperChat"
                         ];
                     }
@@ -1591,12 +1630,22 @@
                             } else if (wsdata.event.type === 'UserTimedOut' || wsdata.event.type ===
                                 'UserBanned') {
                                 console.debug(['User timed out or banned', wsdata]);
-                                remove_messages_by_user_id(wsdata.data.userId);
+                                remove_messages_by_user_id(pick_first(
+                                    wsdata.data.userId,
+                                    wsdata.data.user?.id,
+                                    wsdata.data.targetUserId,
+                                    wsdata.data.targetUser?.id
+                                ));
                             } else if (wsdata.event.type === 'ChatMessageDeleted') {
                                 console.debug(['Message deleted', wsdata]);
-                                remove_messages_by_message_id(wsdata.data.targetMessageId);
+                                remove_messages_by_message_id(pick_first(
+                                    wsdata.data.targetMessageId,
+                                    wsdata.data.messageId,
+                                    wsdata.data.msgId,
+                                    wsdata.data.eventId
+                                ));
                             } else {
-                                console.warn(['Twitch Event not implemented', event]);
+                                console.warn(['Twitch Event not implemented', wsdata.event]);
                             }
                         } else if (wsdata.event.source === 'YouTube') {
                             if (wsdata.event.type === 'Message') {
@@ -1610,14 +1659,26 @@
                                     m.user.isOwner, m.user.isModerator, m.user.isSponsor, m.user.isVerified,
                                     avatar_url(m.user, m));
                             } else if (wsdata.event.type === 'MessageDeleted') {
-                                // This doesn't seem to be implemented in Streamer.Bot
                                 console.debug(['Message deleted', wsdata]);
-                                remove_messages_by_message_id(wsdata.data.eventId);
-                            } else if (wsdata.event.type === 'UserBanned') {
-                                console.debug(['User banned', wsdata]);
-                                remove_messages_by_user_id(wsdata.data.user.id);
+                                remove_messages_by_message_id(pick_first(
+                                    wsdata.data.eventId,
+                                    wsdata.data.messageId,
+                                    wsdata.data.message?.id,
+                                    wsdata.data.targetMessageId,
+                                    wsdata.data.targetMessage?.id
+                                ));
+                            } else if (wsdata.event.type === 'UserBanned' || wsdata.event.type === 'UserTimedOut') {
+                                console.debug(['YouTube user banned or timed out', wsdata]);
+                                remove_messages_by_user_id(pick_first(
+                                    wsdata.data.user?.id,
+                                    wsdata.data.userId,
+                                    wsdata.data.targetUserId,
+                                    wsdata.data.targetUser?.id,
+                                    wsdata.data.channelId,
+                                    wsdata.data.user?.channelId
+                                ));
                             } else {
-                                console.warn(['YouTube Event not implemented', event]);
+                                console.warn(['YouTube Event not implemented', wsdata.event]);
                             }
                         } else if (wsdata.event.source === 'Kick') {
                             if (wsdata.event.type === 'ChatMessage' || wsdata.event.type === 'Message') {
@@ -1645,11 +1706,11 @@
                                 console.debug(['Kick user timed out or banned', wsdata]);
                                 remove_messages_by_user_id(wsdata.data.userId || wsdata.data.user?.id);
                             } else {
-                                console.warn(['Kick Event not implemented', event]);
+                                console.warn(['Kick Event not implemented', wsdata.event]);
                             }
                         }
                     } else {
-                        console.warn(['Event source not implemented', event]);
+                        console.warn(['Event source not implemented', wsdata.event]);
                     }
 
                     // The browser is creating elements faster than it can count them
