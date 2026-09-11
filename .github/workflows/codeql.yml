@@ -21,8 +21,12 @@ on:
     - cron: '17 17 * * 3'
 
 jobs:
+  # ==========================================
+  # JOB 1: RUNS ONLY ON GITHUB.COM
+  # ==========================================
   analyze:
     name: Analyze
+    if: github.server_url == 'https://github.com'
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -70,3 +74,46 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
+
+  # ==========================================
+  # JOB 2: RUNS ONLY ON SELF-HOSTED FORGEJO
+  #        (Or other actions capable forge)
+  # ==========================================
+  forgejo-scan:
+    name: CodeQL Scan (Forgejo)
+    if: github.server_url != 'https://github.com'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install CodeQL CLI (Forgejo)
+      run: |
+        echo "Downloading CodeQL bundle..."
+        curl -L -o codeql-linux64.zip https://github.com/github/codeql-cli-binaries/releases/latest/download/codeql-linux64.zip
+        unzip codeql-linux64.zip
+        echo "$(pwd)/codeql" >> $GITHUB_PATH
+
+    - name: Initialize CodeQL Database (Forgejo)
+      run: |
+        codeql database create my-codeql-db \
+        --language=javascript \
+        --source-root=.
+
+    - name: Download CodeQL Query Pack
+      run: |
+        codeql pack download codeql/javascript-queries
+
+    - name: Run CodeQL Queries (Forgejo)
+      run: |
+        mkdir -p results
+        codeql database analyze my-codeql-db \
+        --format=sarif-latest \
+        --output=results/scan-report.sarif
+
+    - name: Upload Scan Report (Forgejo)
+      uses: https://code.forgejo.org/forgejo/upload-artifact@cb8afe72b42edc798abfb8fcb556cf660d894245 # v5
+      with:
+        name: codeql-security-report
+        path: results/scan-report.sarif
